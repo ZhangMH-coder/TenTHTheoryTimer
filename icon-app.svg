@@ -1,0 +1,14 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 主图标：沙漏+流星（轻简线条） / App main icon: hourglass + meteor (minimal line style) -->
+  <!-- 使用 currentColor(继承当前颜色) 控制颜色，在CSS或父元素设置 color 即可 -->
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="none"/>
+  <!-- 沙漏上半部分三角 / Upper triangle of hourglass -->
+  <path d="M40 30 H88 L64 58 Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <!-- 沙漏下半部分三角 / Lower triangle of hourglass -->
+  <path d="M64 70 L40 98 H88 Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+  <!-- 沙漏外框（轻描边） / Outer frame (light stroke) -->
+  <path d="M36 24 H92 M36 104 H92" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+  <!-- 流星（斜向划过） / Meteor (diagonal) -->
+  <path d="M28 86 L64 70" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="26" cy="87" r="3.5" fill="currentColor" opacity="0.9"/>
+</svg>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一万小时理论计时器</title>
+  <link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/svg+xml" href="./icon-32.svg" />
+    <!-- 站点图标：SVG favicon / Site favicon (SVG) -->
+    <link rel="alternate icon" type="image/svg+xml" href="./icon-app-blue.svg" />
+  </head>
+<body>
+  <!-- 全屏流星层(dom)容器 -->
+  <div id="meteor-layer" aria-hidden="true"></div>
+
+  <div class="app">
+    <header class="app__header">
+      <h1>一万小时理论计时器</h1>
+      <p class="sub">目标：10000 小时（约 36000000 秒）</p>
+    </header>
+
+    <main class="app__main">
+      <section class="panel">
+        <div class="stats">
+          <div class="stat">
+            <div class="stat__label">累计时长（当前技术）(Total for current tech)</div>
+            <div class="stat__value" id="total-time">00:00:00</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">当前会话（绑定技术）(Current session - bound tech)</div>
+            <div class="stat__value" id="session-time">00:00:00</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">进度（当前技术）(Progress - current tech)</div>
+            <div class="progress">
+              <div class="progress__bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="progress__text"><span id="progress-percent">0</span>%</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="start-btn" class="btn btn--primary">开始计时（当前选中技术）(Start for selected tech)</button>
+          <button id="pause-btn" class="btn">暂停计时(Pause)</button>
+          <button id="reset-btn" class="btn btn--danger">复位(Reset)</button>
+        </div>
+
+        <div class="quick-add">
+          <span class="quick-add__label">快捷添加(Quick add)：</span>
+          <button class="btn btn--sm" data-add-min="30">+30 分钟(+30 min)</button>
+          <button class="btn btn--sm" data-add-min="60">+1 小时(+1 hour)</button>
+          <button class="btn btn--sm" data-add-min="120">+2 小时(+2 hours)</button>
+        </div>
+      </section>
+
+      <!-- 新增：技术选择与管理 -->
+      <section class="panel">
+        <h2>技术计时（按技术分别累计）(Tech timing - count separately)</h2>
+        <div class="tech-controls" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="tech-row" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <label for="tech-select" class="stat__label">当前技术(Current tech)</label>
+            <select id="tech-select" class="btn" style="min-width:160px;"></select>
+            <input id="tech-input" type="text" placeholder="新增技术名称(Add new tech name)" style="flex:1;min-width:200px;" />
+            <button id="tech-add" class="btn btn--sm">新增技术(Add)</button>
+          </div>
+          <div class="tech-list">
+            <div class="tech-list__label">各技术累计(Totals by tech)：</div>
+            <ul id="tech-list" class="tech-list__ul" style="display:flex;flex-wrap:wrap;gap:12px;list-style:none;margin:6px 0;padding:0;"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>背景设置(Background settings)</h2>
+        <div class="bg-controls">
+          <div class="bg-upload">
+            <label for="bg-file" class="btn">上传背景图(Upload background)</label>
+            <input id="bg-file" type="file" accept="image/*" hidden />
+            <button id="clear-bg" class="btn btn--danger">移除背景图(Remove background)</button>
+          </div>
+          <div class="meteor-controls">
+            <label class="switch">
+              <input type="checkbox" id="toggle-meteor" />
+              <span class="slider"></span>
+            </label>
+            <span class="switch__text">开启慢速流星特效(Enable slow meteors)</span>
+            <button id="toggle-meteor-pause" class="btn btn--sm" style="margin-left:8px;">暂停流星(Pause meteors)</button>
+          </div>
+        </div>
+        <div class="overlay-controls" style="margin-top:12px; display:flex; align-items:center; gap:8px;">
+          <label for="overlay-strength" style="color: var(--muted);">背景遮罩强度(Overlay strength)</label>
+          <input id="overlay-strength" type="range" min="0" max="1" step="0.05" value="0.35" />
+        </div>
+        
+        <!-- 新增：背景适配控制(Background fit & attachment controls) -->
+        <div class="bg-mode-controls" style="margin-top:8px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <label for="bg-fit" style="color: var(--muted);">背景适应模式(Background fit)</label>
+          <select id="bg-fit" class="btn">
+            <option value="cover">覆盖(cover)</option>
+            <option value="contain">包含(contain)</option>
+            <option value="stretch">拉伸(stretch)</option>
+          </select>
+          <label for="bg-attachment" style="color: var(--muted);">背景滚动行为(Background attachment)</label>
+          <select id="bg-attachment" class="btn">
+            <option value="fixed">固定(fixed)</option>
+            <option value="scroll">跟随滚动(scroll)</option>
+          </select>
+        </div>
+        <p class="tip">提示(Tip)：上传任意图片作为背景，开启流星(流星)后会有缓慢的流星(流星)划过。(Upload any image as background; when meteors enabled, slow meteors will glide)</p>
+      </section>
+
+      <section class="panel">
+        <h2>数据管理(Data management)</h2>
+        <div class="data-controls">
+          <button id="export-btn" class="btn">导出数据(JSON)(Export JSON)</button>
+          <label for="import-file" class="btn">导入数据(JSON)(Import JSON)</label>
+          <input id="import-file" type="file" accept="application/json" hidden />
+        </div>
+      </section>
+    </main>
+
+    <footer class="app__footer">
+      <small>数据保存在浏览器本地(localStorage 本地存储)(Data is stored in browser localStorage)。更换浏览器或清理缓存可能会导致数据丢失(May be lost if cache is cleared or browser changes)。</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

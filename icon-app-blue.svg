@@ -1,0 +1,36 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 固定主题蓝色版图标 / Fixed theme-blue icon (主题蓝色: #3b82f6) -->
+  <!-- 设计：沙漏+流星（轻简线条），用于转换ICO(图标格式)并设置Windows快捷方式图标 -->
+
+  <!-- 外部安全留白 / Outer safe margin -->
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="none" />
+
+  <!-- 沙漏上半部分三角 / Upper triangle of hourglass -->
+  <path d="M40 30 H88 L64 58 Z"
+        fill="none"
+        stroke="#3b82f6"
+        stroke-width="4"
+        stroke-linejoin="round" />
+
+  <!-- 沙漏下半部分三角 / Lower triangle of hourglass -->
+  <path d="M64 70 L40 98 H88 Z"
+        fill="none"
+        stroke="#3b82f6"
+        stroke-width="4"
+        stroke-linejoin="round" />
+
+  <!-- 沙漏外框（轻描边） / Hourglass outer frame (light stroke) -->
+  <path d="M36 24 H92 M36 104 H92"
+        stroke="#3b82f6"
+        stroke-width="3"
+        stroke-linecap="round"
+        opacity="0.6" />
+
+  <!-- 流星（斜向划过） / Meteor (diagonal) -->
+  <path d="M28 86 L64 70"
+        stroke="#3b82f6"
+        stroke-width="4"
+        stroke-linecap="round"
+        opacity="0.95" />
+  <circle cx="26" cy="87" r="3.5" fill="#3b82f6" opacity="0.95" />
+</svg>
