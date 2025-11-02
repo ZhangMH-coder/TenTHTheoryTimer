@@ -320,3 +320,13 @@ body::before {
   .star { animation: none !important; }
   .meteor { animation: none !important; }
 }
+
+/* 数据管理按钮容器(Data controls container) */
+.data-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.data-controls .btn { flex: 1 1 auto; }
+.data-controls label.btn { display: inline-flex; align-items: center; justify-content: center; }
+
+/* 手机断点下：按钮满宽度(Stack buttons on mobile) */
+@media (max-width: 720px) {
+  .data-controls .btn { width: 100%; }
+}

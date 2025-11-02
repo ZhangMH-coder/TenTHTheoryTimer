@@ -784,16 +784,19 @@ function isIOSMobile() {
  */
 function applyBackgroundStyles() {
   const isIOS = isIOSMobile();
-  const attachmentImage = state.bgAttachment || "scroll";
-  // iOS上禁用渐变层fixed，避免滚动抖动；非iOS保持fixed以提升视觉层次
-  const attachmentGradient = isIOS ? "scroll" : "fixed";
+  // 使用正确的状态字段(Use the correct state field)
+  const url = state.backgroundDataUrl ? `url(${state.backgroundDataUrl})` : 'none';
+  // 将fit值映射到CSS的background-size(Map fit to CSS background-size)
+  const size = mapFit(state.bgFit);
+  const attachmentImage = state.bgAttachment || 'scroll';
+  const attachmentGradient = isIOS ? 'scroll' : 'fixed';
 
-  // 设置背景图像组合：第一层为图片，第二层为渐变遮罩
-  document.body.style.backgroundImage = `${state.backgroundImage || "none"}, linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0b1020 100%)`;
-  document.body.style.backgroundRepeat = "no-repeat, no-repeat";
+  // 第一层为图片，第二层为渐变遮罩(Image + gradient)
+  document.body.style.backgroundImage = `${url}, linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0b1020 100%)`;
+  document.body.style.backgroundRepeat = 'no-repeat, no-repeat';
   document.body.style.backgroundAttachment = `${attachmentImage}, ${attachmentGradient}`;
-  document.body.style.backgroundSize = `${state.bgFit || "cover"}, cover`;
-  document.body.style.backgroundPosition = `${state.bgPosition || "center"}, center`;
+  document.body.style.backgroundSize = `${size}, cover`;
+  document.body.style.backgroundPosition = 'center, center';
 
   // 同步遮罩透明度到CSS变量(Sync overlay alpha to CSS variable)
   document.documentElement.style.setProperty('--overlay-alpha', String(state.overlayAlpha ?? 0.35));
