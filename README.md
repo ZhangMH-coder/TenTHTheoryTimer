@@ -34,7 +34,7 @@
 - 数据导出/导入：
   - 导出（Export（导出））：生成 JSON（数据文件）。若不希望文件过大，可先“移除背景图（Remove background（移除背景））”后再导出。
   - 导入（Import（导入））：选择已导出的 JSON（数据文件）即可恢复数据。
-
+可访问https://zhangmh-coder.github.io/TenTHTheoryTimer/
 ## 注意事项（Notes（注意事项））
 - 数据隔离：每位用户的数据都保存在自己设备的浏览器 localStorage（本地存储）中，互不影响。
 - 体积与性能：如果背景图很大，导出的 JSON（数据文件）体积也会变大；建议根据需要清除背景图后再导出。
