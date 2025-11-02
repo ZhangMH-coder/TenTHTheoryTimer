@@ -5,10 +5,19 @@
   --danger: #ef4444;
   --text: #f3f4f6;
   --muted: #9ca3af;
-  --panel: rgba(20, 25, 35, 0.6);
+  --panel-alpha: 0.4; /* 面板透明度(0~1) 默认值(Panel opacity default) */
+  --panel: rgba(20, 25, 35, var(--panel-alpha));
+  --border: rgba(255, 255, 255, 0.08);
+  --overlay-alpha: 0.35; /* 背景遮罩强度(0~1) 默认值(Overlay default) */
+  --select-bg: rgba(255,255,255,0.10); /* 选择框背景(Select background) */
+}
+
+/* 轻改：统一CSS变量，增加遮罩强度变量 */
+:root {
+  --panel-alpha: 0.4; /* 面板透明度(0~1) 默认值(Panel opacity default) */
+  --panel: rgba(20, 25, 35, var(--panel-alpha));
   --border: rgba(255, 255, 255, 0.08);
   --overlay-alpha: 0.35; /* 背景遮罩强度(0~1) 默认值 */
-  --select-bg: rgba(255,255,255,0.10); /* 选择框背景(Select background) */
 }
 
 * { box-sizing: border-box; }
@@ -93,7 +102,8 @@ body::before {
 
 /* 轻改：统一CSS变量，增加遮罩强度变量 */
 :root {
-  --panel: rgba(20, 25, 35, 0.6);
+  --panel-alpha: 0.6; /* 面板透明度(0~1) 默认值(Panel opacity default) */
+  --panel: rgba(20, 25, 35, var(--panel-alpha));
   --border: rgba(255, 255, 255, 0.08);
   --overlay-alpha: 0.35; /* 背景遮罩强度(0~1) 默认值 */
 }

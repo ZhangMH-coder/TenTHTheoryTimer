@@ -10,6 +10,7 @@ const state = {
   meteorEnabled: false, // 是否开启流星(流星)特效
   animationPaused: false, // 是否处于暂停状态
   overlayAlpha: 0.35, // 背景遮罩强度(0~1)
+  panelAlpha: 0.4, // 面板透明度(Panel opacity 0~1)
   // 新增：按技术分别累计(Map by tech)
   techTotals: {}, // 各技术累计秒数(Total seconds per tech)
   currentTech: '通用', // 当前选择的技术(Current selected tech)
@@ -36,6 +37,7 @@ const dom = {
   meteorLayer: document.getElementById('meteor-layer'),
   toggleMeteorPauseBtn: document.getElementById('toggle-meteor-pause'),
   overlayStrength: document.getElementById('overlay-strength'), // 背景遮罩强度滑杆(Overlay strength slider)
+  panelOpacity: document.getElementById('panel-opacity'), // 面板透明度滑杆(Panel opacity slider)
   // 新增：技术相关 DOM(Tech-related DOM)
   techSelect: document.getElementById('tech-select'),
   techInput: document.getElementById('tech-input'),
@@ -186,6 +188,7 @@ function saveState() {
     meteorEnabled: state.meteorEnabled,
     animationPaused: state.animationPaused, // 保存流星暂停状态(Save meteor paused)
     overlayAlpha: state.overlayAlpha, // 保存遮罩强度(Save overlay strength)
+    panelAlpha: state.panelAlpha, // 保存面板透明度(Save panel opacity)
     // 新增：技术相关(Tech fields)
     techTotals: state.techTotals,
     currentTech: state.currentTech,
@@ -205,6 +208,9 @@ function loadState() {
       // 无历史数据时，应用默认遮罩强度(Apply default overlay)
       applyOverlayAlphaToDOM(state.overlayAlpha);
       if (dom.overlayStrength) dom.overlayStrength.value = String(state.overlayAlpha);
+      // 同步默认面板透明度(Apply default panel opacity)
+      applyPanelAlphaToDOM(state.panelAlpha);
+      if (dom.panelOpacity) dom.panelOpacity.value = String(state.panelAlpha);
       // 初始化默认技术(Init default tech)
       state.techTotals = { '通用': 0 };
       state.currentTech = '通用';
@@ -227,6 +233,7 @@ function loadState() {
     state.meteorEnabled = !!payload.meteorEnabled;
     state.animationPaused = !!payload.animationPaused;
     state.overlayAlpha = (typeof payload.overlayAlpha === 'number') ? payload.overlayAlpha : state.overlayAlpha;
+    state.panelAlpha = (typeof payload.panelAlpha === 'number') ? payload.panelAlpha : state.panelAlpha;
 
     // 应用背景(Apply background)
     if (state.backgroundDataUrl) {
@@ -235,6 +242,10 @@ function loadState() {
     // 应用遮罩强度(Apply overlay)
     applyOverlayAlphaToDOM(state.overlayAlpha);
     if (dom.overlayStrength) dom.overlayStrength.value = String(state.overlayAlpha);
+
+    // 应用面板透明度(Apply panel opacity)
+    applyPanelAlphaToDOM(state.panelAlpha);
+    if (dom.panelOpacity) dom.panelOpacity.value = String(state.panelAlpha);
 
     // 应用流星开关(Apply meteors)
     dom.toggleMeteor.checked = state.meteorEnabled;
@@ -620,6 +631,8 @@ function bindEvents() {
   // 新增：背景适配与滚动行为(Background fit & attachment)
   if (dom.bgFitSelect) dom.bgFitSelect.addEventListener('change', (e) => setBgFit(e.target.value));
   if (dom.bgAttachmentSelect) dom.bgAttachmentSelect.addEventListener('change', (e) => setBgAttachment(e.target.value));
+  // 新增：面板透明度事件绑定(Bind panel opacity slider)
+  if (dom.panelOpacity) dom.panelOpacity.addEventListener('input', (e) => setPanelOpacity(e.target.value));
 }
 
 /**
@@ -692,6 +705,30 @@ function setOverlayStrength(alpha) {
   applyOverlayAlphaToDOM(clamped);
   saveState();
 }
+
+/**
+ * 将面板透明度应用到DOM(Apply panel alpha to DOM)
+ * @param {number} alpha - 面板透明度(Panel alpha)
+ */
+function applyPanelAlphaToDOM(alpha) {
+  const clamped = Math.max(0, Math.min(1, Number(alpha)));
+  // 通过CSS变量控制.panel背景透明度(Use CSS variable for .panel background)
+  document.documentElement.style.setProperty('--panel-alpha', String(clamped));
+}
+
+/**
+ * 设置面板透明度(Set panel opacity)
+ * @param {number|string} alpha - 面板透明度(0~1)
+ */
+function setPanelOpacity(alpha) {
+  const clamped = Math.max(0, Math.min(1, Number(alpha)));
+  state.panelAlpha = clamped;
+  applyPanelAlphaToDOM(clamped);
+  // 同步滑杆UI(Sync slider UI)
+  if (dom.panelOpacity) dom.panelOpacity.value = String(clamped);
+  saveState();
+}
+
 /**
  * 背景适配值映射(Map background fit value)
  * 将用户选择的适配模式转换为CSS的background-size值(Convert user fit mode to CSS background-size)
