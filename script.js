@@ -467,16 +467,34 @@ function cancelScheduledMeteors() {
 /**
  * 设置流星特效开关(Set up meteor effect)
  * @param {boolean} enabled - 是否开启(Enabled)
+ * 说明(Notes)：
+ * - 当用户偏好减少动画(prefers-reduced-motion)时，减少星星数量并不生成流星(Respect reduced motion)
  */
 function setupMeteor(enabled) {
   if (enabled) {
     ensureMeteorStyleEl();
     initMeteorLayer();
-    createStars(150);
-    // 预生成几颗流星(Pre-generate some meteors)
-    for (let i = 0; i < 3; i++) {
-      const t = setTimeout(() => createMeteorDOM(), i * 3000);
-      meteorTimers.push(t);
+    // 检测用户动画偏好(Detect motion preference)
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const starCount = reduced ? 80 : 150;
+    createStars(starCount);
+
+    if (!reduced) {
+      // 预生成几颗流星(Pre-generate some meteors)
+      for (let i = 0; i < 3; i++) {
+        const t = setTimeout(() => createMeteorDOM(), i * 3000);
+        meteorTimers.push(t);
+      }
+      if (dom.toggleMeteorPauseBtn) {
+        dom.toggleMeteorPauseBtn.disabled = false;
+        dom.toggleMeteorPauseBtn.textContent = '暂停流星(Pause meteors)';
+      }
+    } else {
+      // 减少动画时禁用暂停按钮(Disable pause button when reduced)
+      if (dom.toggleMeteorPauseBtn) {
+        dom.toggleMeteorPauseBtn.textContent = '已降低动画(Animations reduced)';
+        dom.toggleMeteorPauseBtn.disabled = true;
+      }
     }
   } else {
     cancelScheduledMeteors();
@@ -691,19 +709,26 @@ function mapFit(fit) {
 }
 
 /**
- * 应用背景样式到body(Apply background styles to body)
- * 根据state中的背景数据与适配设置统一更新背景样式(Update background using state.backgroundDataUrl, bgFit, bgAttachment)
+ * 统一应用背景样式(Apply background styles consistently)
+ * 说明(Notes)：
+ * - 在iOS设备上禁用渐变层的fixed以避免滚动抖动(Disable gradient fixed on iOS to avoid jitter)
+ * - 无背景图时仍保留渐变层(Keep gradient even when no image)
  */
 function applyBackgroundStyles() {
-  const url = state.backgroundDataUrl ? `url(${state.backgroundDataUrl})` : null;
-  if (!url) return; // 无背景数据(No background data)
+  const isIOS = isIOSMobile();
+  const url = state.backgroundDataUrl ? `url(${state.backgroundDataUrl})` : 'none';
   const size = mapFit(state.bgFit);
-  // 采用两层背景：图片 + 渐变(Image + gradient)
-  document.body.style.backgroundImage = `${url}, linear-gradient(120deg, #0b1b2a 0%, #0e2a47 50%, #123b66 100%)`;
+  const attachmentImage = state.bgAttachment || 'scroll';
+  const attachmentGradient = isIOS ? 'scroll' : 'fixed';
+
+  document.body.style.backgroundImage = `${url}, linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0b1020 100%)`;
   document.body.style.backgroundRepeat = 'no-repeat, no-repeat';
-  document.body.style.backgroundAttachment = `${state.bgAttachment}, fixed`;
-  document.body.style.backgroundSize = `${size}, auto`;
+  document.body.style.backgroundAttachment = `${attachmentImage}, ${attachmentGradient}`;
+  document.body.style.backgroundSize = `${size}, cover`;
   document.body.style.backgroundPosition = 'center, center';
+
+  // 同步遮罩透明度到CSS变量(Sync overlay alpha to CSS variable)
+  document.documentElement.style.setProperty('--overlay-alpha', String(state.overlayAlpha ?? 0.35));
 }
 
 /**
@@ -736,4 +761,40 @@ function setBackgroundImage(dataUrl) {
     state.backgroundDataUrl = dataUrl;
   }
   applyBackgroundStyles();
+}
+/**
+ * 检测是否为iOS或移动Safari(iOS or Mobile Safari detection)
+ * 说明(Description)：
+ * - iOS上的background-attachment: fixed在Safari中可能导致滚动抖动或背景不随内容正确渲染
+ * - 新的iPad在桌面模式下UA包含Macintosh，因此需要maxTouchPoints辅助识别
+ * 返回(Return)：true表示为iOS设备或移动Safari，false表示非iOS
+ */
+function isIOSMobile() {
+  const ua = navigator.userAgent || "";
+  const isIOSDevice = /iPad|iPhone|iPod/i.test(ua);
+  const isMacTouch = /Macintosh/i.test(ua) && navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
+  return isIOSDevice || isMacTouch;
+}
+
+/**
+ * 统一应用背景样式(Apply background styles consistently)
+ * 作用(Purpose)：
+ * - 设置背景图与渐变层的组合样式，使页面在桌面与移动端表现一致
+ * - 在iOS设备上避免使用fixed以防止滚动异常
+ */
+function applyBackgroundStyles() {
+  const isIOS = isIOSMobile();
+  const attachmentImage = state.bgAttachment || "scroll";
+  // iOS上禁用渐变层fixed，避免滚动抖动；非iOS保持fixed以提升视觉层次
+  const attachmentGradient = isIOS ? "scroll" : "fixed";
+
+  // 设置背景图像组合：第一层为图片，第二层为渐变遮罩
+  document.body.style.backgroundImage = `${state.backgroundImage || "none"}, linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0b1020 100%)`;
+  document.body.style.backgroundRepeat = "no-repeat, no-repeat";
+  document.body.style.backgroundAttachment = `${attachmentImage}, ${attachmentGradient}`;
+  document.body.style.backgroundSize = `${state.bgFit || "cover"}, cover`;
+  document.body.style.backgroundPosition = `${state.bgPosition || "center"}, center`;
+
+  // 同步遮罩透明度到CSS变量(Sync overlay alpha to CSS variable)
+  document.documentElement.style.setProperty('--overlay-alpha', String(state.overlayAlpha ?? 0.35));
 }

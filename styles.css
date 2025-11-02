@@ -260,6 +260,35 @@ select.btn option { background-color: #0b1020; color: var(--text); }
 /* 响应式优化(responsive) */
 @media (max-width: 720px) {
   .stats { grid-template-columns: 1fr; }
+  .app { padding: 16px env(safe-area-inset-right) 16px env(safe-area-inset-left); }
+  .app__header h1 { font-size: clamp(22px, 6vw, 28px); }
+  .app__header .sub { font-size: clamp(12px, 3.5vw, 14px); }
+
+  .panel { padding: 14px; }
+
+  .controls { flex-wrap: wrap; }
+  .controls .btn { flex: 1 1 100%; }
+
+  .quick-add { flex-wrap: wrap; }
+
+  .tech-controls { gap: 10px; }
+  .tech-row { flex-direction: column; align-items: stretch; }
+  .tech-row select.btn,
+  .tech-row input,
+  .tech-row button { width: 100%; min-width: 0; }
+
+  .bg-controls { flex-direction: column; align-items: stretch; gap: 10px; }
+  .bg-upload { flex-wrap: wrap; }
+  .bg-upload .btn { flex: 1 1 48%; }
+
+  .bg-mode-controls { flex-wrap: wrap; }
+  .bg-mode-controls select.btn { width: 100%; }
+
+  .overlay-controls { flex-wrap: wrap; }
+  .overlay-controls input[type="range"] { width: 100%; }
+
+  .stat__value { font-size: 22px; }
+  .btn { padding: 12px 14px; }
 }
 
 /* 轻改：背景遮罩采用CSS变量控制透明度 */
@@ -284,4 +313,10 @@ body::before {
 /* 轻改：滑杆样式微调（仅为了更协调的视觉） */
 .overlay-controls input[type="range"] {
   width: 220px;
+}
+
+/* 无动画模式支持(Prefer reduced motion) */
+@media (prefers-reduced-motion: reduce) {
+  .star { animation: none !important; }
+  .meteor { animation: none !important; }
 }

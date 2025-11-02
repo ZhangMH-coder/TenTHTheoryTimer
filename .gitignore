@@ -1,0 +1,26 @@
+# 一万小时理论计时器 Git 忽略文件（.gitignore（忽略配置））
+
+# IDE（集成开发环境）
+.idea/
+*.iml
+
+# 操作系统（Operating system（操作系统））临时文件
+Thumbs.db
+.DS_Store
+
+# Windows（视窗）快捷方式
+*.lnk
+
+# 日志（Logs（日志））
+*.log
+
+# Node.js（Node（节点））相关（如本地开发临时依赖）
+node_modules/
+dist/
+.cache/
+
+# 环境变量（Environment variables（环境变量））
+.env
+
+# 其他（Others（其他））
+assets/temp/

@@ -2,6 +2,7 @@
 
 一个纯静态（Static（静态））网页应用，帮助你按照“刻意练习（Deliberate practice（刻意练习））”记录并累计不同技术（Tech（技术））的练习时长，支持背景图片（Background image（背景图片））与多种适配模式（Fit modes（适配模式）），数据保存在浏览器本地（localStorage（本地存储）），可导出/导入（Export/Import（导出/导入））。
 
+- 在线预览（Preview（预览））：本地 http://localhost:5501/
 
 
 ## 功能特性（Features（功能））
